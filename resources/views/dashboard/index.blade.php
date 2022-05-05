@@ -92,23 +92,41 @@ function random_bg_color() {
 const lok = JSON.parse('{!! json_encode($lokasi) !!}');
 const ttl = JSON.parse('{!! json_encode($ttl) !!}');
 var pengalih = [];
-const labels = ttl;
+
+var ttla = [];
+var ttlpengalih = [];
+var tag = 0;
+var taglok = 0;
+var labels = [];
 
 var  data = {
-  labels: labels,
+  labels: labels[0],
   datasets: []
 };
   
 lok.forEach(element => {
   var anemo = []; 
-  element.sensor.forEach(element => {
-  anemo.push( element.anemometer)
+  if (element.sensor.length > tag) {
+    tag = element.sensor.length;
+    taglok = lok.length;
+  }
+
+  element.sensor.forEach((element,index) => {
+  anemo.push( element.anemometer);
+  ttlpengalih.push('data ke ' + index);
   });
+// console.log(ttlpengalih);
+  
       var color = random_bg_color();
       pengalih = {"label": element.nama_lokasi,"data": anemo,"borderColor": color,"backgroundColor": color,},
       data.datasets.push(pengalih);
+      ttla.push(ttlpengalih);
+      ttlpengalih =[];
       pengalih = [];
 });
+labels = ttla[taglok-1];
+// console.log(labels);
+data.labels = labels;
 
   const config = {
   type: 'line',
